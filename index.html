@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>House Price Calculator</title>
+  <link rel="icon" href="/static/calculator.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="formbold-main-wrapper">
+    <div class="formbold-form-wrapper">
+      <img src="/static/house_illustration.png" alt="Form Image">
+      <form action="/predict" method="POST">
+
+        <!-- Square Feet Input -->
+        <div class="formbold-mb-5">
+          <label for="squareFeet" class="formbold-form-label">Square Feet (m<sup>2</sup>)</label>
+          <input
+            type="number"
+            name="squareFeet"
+            id="squareFeet"
+            placeholder="Enter square feet"
+            class="formbold-form-input"
+            min="0"
+            required
+            step="0.01"
+          />
+        </div>
+
+        <!-- Garage Size Input -->
+        <div class="formbold-mb-5">
+          <label for="garage_size" class="formbold-form-label">Garage Size (m<sup>2</sup>)</label>
+          <input
+            type="number"
+            name="garage_size"
+            id="garage_size"
+            placeholder="Enter square feet"
+            class="formbold-form-input"
+            min="0"
+            required
+            step="0.01"
+          />
+        </div>
+
+        <!-- Number of Bedrooms -->
+        <div class="formbold-mb-5">
+          <label class="formbold-form-label">Number of Bedrooms</label>
+          <div class="formbold-radio-flex-horizontal">
+            <label class="formbold-radio-label">
+              <input type="radio" name="bedrooms" value="1" required /> 1
+            </label>
+            <label class="formbold-radio-label">
+              <input type="radio" name="bedrooms" value="2" required /> 2
+            </label>
+            <label class="formbold-radio-label">
+              <input type="radio" name="bedrooms" value="3" required /> 3
+            </label>
+            <label class="formbold-radio-label">
+              <input type="radio" name="bedrooms" value="4" required /> 4
+            </label>
+            <label class="formbold-radio-label">
+              <input type="radio" name="bedrooms" value="5" required /> 5
+            </label>
+          </div>
+        </div>
+
+        <!-- Number of Bathrooms -->
+        <div class="formbold-mb-5">
+          <label class="formbold-form-label">Number of Bathrooms</label>
+          <div class="formbold-radio-flex-horizontal">
+            <label class="formbold-radio-label">
+              <input type="radio" name="bathrooms" value="1" required /> 1
+            </label>
+            <label class="formbold-radio-label">
+              <input type="radio" name="bathrooms" value="2" required /> 2
+            </label>
+            <label class="formbold-radio-label">
+              <input type="radio" name="bathrooms" value="3" required /> 3
+            </label>
+          </div>
+        </div>
+
+        <!-- Number of Floors -->
+        <div class="formbold-mb-5">
+          <label class="formbold-form-label">Number of Floor</label>
+          <div class="formbold-radio-flex-horizontal">
+            <label class="formbold-radio-label">
+              <input type="radio" name="floor_level" value="1" required /> 1
+            </label>
+            <label class="formbold-radio-label">
+              <input type="radio" name="floor_level" value="2" required /> 2
+            </label>
+            <label class="formbold-radio-label">
+              <input type="radio" name="floor_level" value="3" required /> 3
+            </label>
+          </div>
+        </div>
+
+        <!-- Garden Available -->
+        <div class="formbold-mb-5">
+          <label class="formbold-form-label">Garden available</label>
+          <div class="formbold-radio-flex-horizontal">
+            <label>
+              <input type="radio" name="gardenAvailable" value="Yes" required /> Yes
+            </label>
+            <label>
+              <input type="radio" name="gardenAvailable" value="No" required /> No
+            </label>
+          </div>
+        </div>
+        
+        <!-- Pool Available -->
+        <div class="formbold-mb-5">
+          <label class="formbold-form-label">Pool available</label>
+          <div class="formbold-radio-flex-horizontal">
+            <label>
+              <input type="radio" name="poolAvailable" value="Yes" required /> Yes
+            </label>
+            <label>
+              <input type="radio" name="poolAvailable" value="No" required /> No
+            </label>
+          </div>
+        </div>
+
+        <!-- Year Built -->
+        <div class="formbold-mb-5">
+          <label for="yearBuilt" class="formbold-form-label">Year Built</label>
+          <select name="yearBuilt" id="yearBuilt" class="formbold-form-input" required>
+            <option value="">Select Year</option>
+            <script>
+              for (let year = 1900; year <= 2022; year++) {
+                document.write(`<option value="${year}">${year}</option>`);
+              }
+            </script>
+          </select>
+        </div>
+
+        <!-- Location Score -->
+        <div class="formbold-mb-5">
+          <label for="locationScore" class="formbold-form-label">Location Score (1-10)</label>
+          <div class="slider-container">
+            <input
+              type="range"
+              name="locationScore"
+              id="locationScore"
+              min="0"
+              max="10"
+              step="0.1"
+              class="formbold-form-input"
+              oninput="updateSliderValue(this)"
+              required
+            />
+            <span id="sliderValue" class="slider-value">5.0</span>
+          </div>
+        </div>
+
+        <!-- Distance to Center -->
+        <div class="formbold-mb-5">
+          <label for="distanceToCenter" class="formbold-form-label">Distance to center</label>
+          <input
+            type="number"
+            name="distanceToCenter"
+            id="distanceToCenter"
+            placeholder="Enter distance in km"
+            class="formbold-form-input"
+            min="0"
+            required
+            step="0.01"
+          />
+        </div>
+
+        <button class="formbold-btn" type="submit">Submit</button>
+      </form>
+      <div class="prediction-container">
+        <h3>{{prediction_text}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateSliderValue(slider) {
+      const sliderValue = document.getElementById('sliderValue');
+      sliderValue.textContent = slider.value;
+    }
+
+    // Initialize slider value on page load
+    document.getElementById('locationScore').value = 5.0; // default slider value
+    updateSliderValue(document.getElementById('locationScore'));
+  </script>
+</body>
+</html>
